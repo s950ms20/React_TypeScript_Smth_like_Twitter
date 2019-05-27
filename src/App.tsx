@@ -3,43 +3,33 @@ import './App.scss';
 import { UserPanel } from './components/UserPanel';
 import { Register } from './components/Register';
 import { Logout } from './components/Logout';
-import { auth } from './fb';
 import { Wall } from './components/Wall';
 import { Dashboard } from './components/Dashboard';
-import { BrowserRouter, Route, Redirect } from 'react-router-dom';
-import { Post } from './components/Post';
-
+import { BrowserRouter, Route } from 'react-router-dom';
+import { Posts } from './components/Posts';
+import { Profile } from './components/Profile';
+import { GlobalState } from './state/GlobalState';
+import { AppHeader } from './components/AppHeader';
+import { SinglePost } from './components/SinglePost';
 interface Props {}
 
 const App: React.FC<Props> = (props) => {
-	const [ email, setEmail ] = React.useState('');
-	React.useEffect(
-		() => {
-			auth.onAuthStateChanged((user) => {
-				if (user) {
-					// User is signed in.
-					const email = String(user.email);
-					setEmail(email);
-				} else {
-					// User is signed out.
-					console.log('User is Logged Out');
-				}
-			});
-		},
-		[ email ]
-	);
-
 	return (
 		<React.Fragment>
 			<BrowserRouter>
-				<div className="app">
-					<Route path="/" exact component={Dashboard} />
-					<Route path="/dashboard" exact render={(props) => <UserPanel email={email} history={history} />} />
-					<Route path="/dashboard" exact render={(props) => <Wall email={email} />} />
-					<Route path="/logout" exact render={(props) => <Logout email={email} history={history} />} />
-					<Route path="/register" exact component={Register} />
-					<Route path="/post" exact component={Post} />
-				</div>
+				<GlobalState>
+					<div className="app">
+						<AppHeader />
+						<Route path="/" exact component={Dashboard} />
+						<Route path="/dashboard" exact render={(props) => <UserPanel history={history} />} />
+						<Route path="/logout" exact render={(props) => <Logout history={history} />} />
+						<Route path="/register" exact component={Register} />
+						<Route path="/dashboard" exact component={Wall} />
+						<Route path="/posts" component={SinglePost} />
+						<Route path="/author" component={Posts} />
+						<Route path="/profile" exact component={Profile} />
+					</div>
+				</GlobalState>
 			</BrowserRouter>
 		</React.Fragment>
 	);

@@ -1,22 +1,17 @@
 import * as React from 'react';
 import { Posts } from './Posts';
 import { AddNewPost } from './AddNewPost';
+import { GlobalContext, firestoreDoc } from '../state/GlobalContext';
 
-interface Props {
-	email: string;
-}
+interface Props {}
 
-export const Wall: React.FC<Props> = ({ email }) => {
-	const addNewPostView = email ? (
-		<React.Fragment>
-			<AddNewPost email={email} />
-		</React.Fragment>
-	) : null;
+export const Wall: React.FC<Props> = (props) => {
+	const global = React.useContext(GlobalContext);
 
 	return (
 		<React.Fragment>
-			{addNewPostView}
-			<Posts email={email} />
+			{global.email ? <AddNewPost /> : null}
+			<Posts pst={global.selectedPost} />
 		</React.Fragment>
 	);
 };

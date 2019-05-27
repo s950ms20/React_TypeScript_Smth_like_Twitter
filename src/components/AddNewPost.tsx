@@ -1,66 +1,37 @@
 import * as React from 'react';
-import { db } from '../fb';
+import { GlobalContext } from '../state/GlobalContext';
+import { ImgUpload } from './ImgUpload';
 
-interface Props {
-	email: string;
-}
+interface Props {}
 
-export const AddNewPost: React.FC<Props> = ({ email }) => {
-	const [ title, setTitle ] = React.useState('');
-	const [ content, setContent ] = React.useState('');
-
-	const add = () => {
-		db
-			.collection('posts')
-			.doc()
-			.set({
-				title: title,
-				content: content,
-				author: email,
-				time: Date()
-			})
-			.then(function() {
-				console.log('Document successfully written!');
-			})
-			.catch(function(error) {
-				console.error('Error writing document: ', error);
-			});
-	};
-
-	const lorem = () => {
-		const ipsum =
-			'Lorem ipsum dolor sit amet consectetur adipisicing elit. Facilis eos sit quos provident soluta? Quidem, earum quisquam ipsam fugit quo facere minima tempore distinctio laboriosam, obcaecati nobis nesciunt, numquam aliquam.';
-		setTitle(String(Math.floor(10000 * Math.random())));
-		setContent(ipsum);
-	};
-
-	const clear = () => {
-		setTitle('');
-		setContent('');
-	};
+export const AddNewPost: React.FC<Props> = (props) => {
+	const global = React.useContext(GlobalContext);
 
 	return (
 		<React.Fragment>
-			<div className="box">
-				<input
-					type="text"
-					placeholder="Title......."
-					value={title}
-					onChange={(e) => setTitle(e.target.value)}
-				/>
-				<br />
-				<textarea
-					className="content"
-					// type="text"
-					placeholder="Content..."
-					value={content}
-					onChange={(e) => setContent(e.target.value)}
-				/>
-				<br />
-				<button onClick={add}>Add</button>
-				<button onClick={lorem}>Lorem Ipsum</button>
-				<button onClick={clear}>Clear</button>
-			</div>
+			{global.minimizeToIconNewPost ? null : (
+				<div className="box" onClick={global.newDocId}>
+					<input
+						type="text"
+						placeholder="Title......."
+						value={global.title}
+						onChange={(e) => global.setTitle(e.target.value)}
+					/>
+					<br />
+					<textarea
+						className="content"
+						placeholder="Content..."
+						value={global.content}
+						onChange={(e) => global.setContent(e.target.value)}
+					/>
+					<br />
+					<ImgUpload />
+					<br />
+					<button onClick={global.add}>Add</button>
+					<button onClick={global.lorem}>Lorem Ipsum</button>
+					<button onClick={global.clear}>Clear</button>
+				</div>
+			)}
 		</React.Fragment>
 	);
 };
