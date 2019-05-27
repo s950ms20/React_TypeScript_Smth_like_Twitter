@@ -1,6 +1,6 @@
 import * as React from 'react';
-import { auth } from '../fb';
 import { Link } from 'react-router-dom';
+import { GlobalContext } from '../state/GlobalContext';
 
 interface Props {
 	history: any;
@@ -9,14 +9,14 @@ interface Props {
 export const Register: React.FC<Props> = (props) => {
 	const [ email, setEmail ] = React.useState('');
 	const [ password, setPassword ] = React.useState('');
+	const global = React.useContext(GlobalContext);
 
 	const register = (event: any) => {
 		event.preventDefault();
-		auth.createUserWithEmailAndPassword(email, password).catch((error) => {
-			alert(error.message);
-		});
-		email && password ? props.history.replace('/') : null;
+		global.registerNewUser(email, password);
+		email && password ? props.history.replace('/profile') : null;
 	};
+
 	return (
 		<React.Fragment>
 			<div className="box">

@@ -1,22 +1,20 @@
 import * as React from 'react';
-import { auth } from '../fb';
 import { Login } from './Login';
 import { Logout } from './Logout';
+import { GlobalContext } from '../state/GlobalContext';
 
 interface Props {
-	email: string;
 	history: any;
 }
 
-export const UserPanel: React.FC<Props> = ({ email }) => {
-	console.log(`Props z UserPanel ${email}`);
-	const view = email ? (
-		<React.Fragment>
-			<Logout email={email} history={history} />
-		</React.Fragment>
-	) : (
-		<Login />
-	);
+export const UserPanel: React.FC<Props> = () => {
+	const global = React.useContext(GlobalContext);
 
-	return <React.Fragment>{view}</React.Fragment>;
+	return (
+		<React.Fragment>
+			{global.minimizeToIconUserPanel ? null : (
+				<React.Fragment>{global.userUID ? <Logout history={history} /> : <Login />}</React.Fragment>
+			)}
+		</React.Fragment>
+	);
 };
